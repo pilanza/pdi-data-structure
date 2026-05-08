@@ -12,14 +12,17 @@ public class InternalWindow extends VBox {
     private double dragOffsetX;
     private double dragOffsetY;
 
-    public InternalWindow(String label, ImageView imageView) {
+    public InternalWindow(String label, ImageView image_view, Runnable change_active_window) {
         Label titleLabel = new Label(label);
         Button closeButton = new Button("x");
         HBox titleBox = new HBox(titleLabel, closeButton);
-        getChildren().addAll(titleBox, imageView);
+        getChildren().addAll(titleBox, image_view);
 
+        //Fecha a janela
         closeButton.setOnAction(e -> ((Pane) this.getParent()).getChildren().remove(this));
 
+        //Seleciona a janela ativa
+        titleBox.setOnMouseClicked(e -> change_active_window.run());
 
         //Drag 'n Drop
         titleBox.setOnMousePressed(e -> {
@@ -33,10 +36,10 @@ public class InternalWindow extends VBox {
         });
 
         //Estilos
-        String closedButtonGeneralStyle = "-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-padding: 2 8 2 8; -fx-background-radius: 0";
-        closeButton.setStyle("-fx-background-color: transparent; " + closedButtonGeneralStyle);
-        closeButton.setOnMouseEntered(e -> closeButton.setStyle("-fx-background-color: #c42b1c; -fx-text-fill: white; -fx-cursor: hand;" + closedButtonGeneralStyle));
-        closeButton.setOnMouseExited(e -> closeButton.setStyle("-fx-background-color: transparent; -fx-text-fill: black; " + closedButtonGeneralStyle));
+        String close_button_general_style = "-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-padding: 2 8 2 8; -fx-background-radius: 0";
+        closeButton.setStyle("-fx-background-color: transparent; " + close_button_general_style);
+        closeButton.setOnMouseEntered(e -> closeButton.setStyle("-fx-background-color: #c42b1c; -fx-text-fill: white; -fx-cursor: hand;" + close_button_general_style));
+        closeButton.setOnMouseExited(e -> closeButton.setStyle("-fx-background-color: transparent; -fx-text-fill: black; " + close_button_general_style));
 
         HBox.setHgrow(titleLabel, Priority.ALWAYS);
 
