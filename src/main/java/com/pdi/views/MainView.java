@@ -14,6 +14,7 @@ public class MainView extends BorderPane {
     private Pane images_pane = new Pane();
     private Image active_image;
     private String active_image_name;
+    private String active_image_extension;
 
     public MainView() {
         MenuBar top_menu = new MenuBar();
@@ -43,7 +44,7 @@ public class MainView extends BorderPane {
         //Cria o menu de ruído
         Menu noise = new Menu("Ruído");
         MenuItem salt_and_pepper = new MenuItem("Sal e Pimenta");
-        salt_and_pepper.setOnAction(e-> new SaltAndPepperView(active_image, active_image_name, result -> openImage(result, active_image_name + "salt_and_pepper")));
+        salt_and_pepper.setOnAction(e-> new SaltAndPepperView(active_image, active_image_name, result -> openImage(result, active_image_name + "_salt_and_pepper" + active_image_extension)));
         noise.getItems().addAll(salt_and_pepper);
 
         //Cria o menu de sobre
@@ -68,9 +69,11 @@ public class MainView extends BorderPane {
         Image image = new Image(file.toURI().toString());
 
         active_image = image;
-        active_image_name = file.getName();
+        String name =file.getName();
+        active_image_name = name.substring(0, name.lastIndexOf("."));
+        active_image_extension = name.substring(name.lastIndexOf("."));
 
-        openImage(image, active_image_name);
+        openImage(image, active_image_name + active_image_extension);
     }
 
     private void openImage(Image image, String name) {
