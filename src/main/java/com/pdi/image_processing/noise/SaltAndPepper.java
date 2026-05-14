@@ -9,11 +9,11 @@ public class SaltAndPepper extends WritableImage {
         super((int) image.getWidth(), (int) image.getHeight());
         double random;
 
-        for(int x=0; x < image.getWidth(); x++) {
-            for(int y=0; y < image.getHeight(); y++) {
+        for (int x = 0; x < image.getWidth(); x++) {
+            for (int y = 0; y < image.getHeight(); y++) {
                 random = Math.random();
-                if(random<=probability/2) getPixelWriter().setColor(x, y, Color.BLACK);
-                else if (random <= probability) getPixelWriter().setColor(x, y, Color.WHITE);
+                if (random <= probability / 2) getPixelWriter().setColor(x, y, Color.BLACK);
+                else if (random <= probability)  getPixelWriter().setColor(x, y, Color.WHITE);
                 else getPixelWriter().setColor(x, y, image.getPixelReader().getColor(x, y));
             }
         }
