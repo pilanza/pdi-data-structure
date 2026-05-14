@@ -34,8 +34,9 @@ public class MainView extends BorderPane {
             exit.setOnAction(e -> System.exit(0));
         archive.getItems().addAll(load_image, save, exit);
 
-        //Quick Sort
         Menu gray_filter = new Menu("Filtragem (Cinza)");
+        
+        //Quick Sort
         Menu quicksort_gray_filtering = new Menu("Filtragem com Ordenação");
 
         MenuItem qs_apply = new MenuItem("Aplicar na imagem");
@@ -43,9 +44,8 @@ public class MainView extends BorderPane {
             active_image,
             result -> openImageAsActive(result, active_image_name + "_median" + active_image_extension)
         ));
-
         MenuItem qs_batch = new MenuItem("Aplicar em lote");
-
+        qs_batch.setOnAction(e -> MedianFilterView.applyOnBatch());
         quicksort_gray_filtering.getItems().addAll(qs_apply, qs_batch);
 
         //Árvore AVL

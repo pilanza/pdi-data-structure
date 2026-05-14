@@ -2,7 +2,6 @@ package com.pdi.views.image_processing_views;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 

@@ -1,4 +1,4 @@
-package com.pdi.image_processing.filters;
+package com.pdi.image_processing.filter;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
