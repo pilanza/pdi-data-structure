@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import com.pdi.views.image_processing_views.SaltAndPepperView;
+import com.pdi.views.image_processing_views.AVLFilterView;
 import com.pdi.views.image_processing_views.MedianFilterView;
 
 import javafx.scene.control.Alert.AlertType;
@@ -36,7 +37,7 @@ public class MainView extends BorderPane {
 
         Menu gray_filter = new Menu("Filtragem (Cinza)");
         
-        //Quick Sort
+        // Quick Sort -------------------------------------------------------------------
         Menu quicksort_gray_filtering = new Menu("Filtragem com Ordenação");
 
         MenuItem qs_apply = new MenuItem("Aplicar na imagem");
@@ -47,13 +48,25 @@ public class MainView extends BorderPane {
         MenuItem qs_batch = new MenuItem("Aplicar em lote");
         qs_batch.setOnAction(e -> MedianFilterView.applyOnBatch());
         quicksort_gray_filtering.getItems().addAll(qs_apply, qs_batch);
+        // ------------------------------------------------------------------------------
 
-        //Árvore AVL
+
+        // Arvore AVL -------------------------------------------------------------------
         Menu tree_gray_filtering = new Menu("Filtragem com Árvore");
-        tree_gray_filtering.getItems().addAll(
-            new MenuItem("Aplicar na imagem"),
-            new MenuItem("Aplicar em lote")
-        );
+
+        MenuItem avl_apply = new MenuItem("Aplicar na imagem");
+        avl_apply.setOnAction(e -> AVLFilterView.applyOnImage(
+            active_image,
+            result -> openImageAsActive(result, active_image_name + "_avl" + active_image_extension)
+        ));
+
+        MenuItem avl_batch = new MenuItem("Aplicar em lote");
+        avl_batch.setOnAction(e -> AVLFilterView.applyOnBatch());
+
+        tree_gray_filtering.getItems().addAll(avl_apply, avl_batch);
+        // ------------------------------------------------------------------------------
+
+        //Grafor
         Menu graph_gray_filtering = new Menu("Filtragem com Grafo");
         graph_gray_filtering.getItems().addAll(
             new MenuItem("Aplicar na imagem"),
