@@ -127,8 +127,6 @@ public class ArvoreAVL {
             }
         }
 
-        if (no == null) return null;
-
         atualizar(no);
         int fb = fatorBalanceamento(no);
 
