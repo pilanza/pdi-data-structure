@@ -1,12 +1,12 @@
-package com.pdi.image_processing.filter;
+package com.pdi.image_processing.filter.Gray_Filter;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class MedianFilter extends WritableImage {
+public class QuickSort_Filter extends WritableImage {
 
-    public MedianFilter(Image image, int windowSize) {
+    public QuickSort_Filter(Image image, int windowSize) {
         super((int) image.getWidth(), (int) image.getHeight());
         int width  = (int) image.getWidth();
         int height = (int) image.getHeight();

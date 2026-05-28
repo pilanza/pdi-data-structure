@@ -1,4 +1,4 @@
-package com.pdi.views.image_processing_views;
+package com.pdi.views.image_processing_views.Gray_Filtering;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

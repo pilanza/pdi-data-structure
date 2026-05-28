@@ -1,4 +1,4 @@
-package com.pdi.image_processing.filter.TreeAvlFilter;
+package com.pdi.image_processing.filter.Gray_Filter.TreeAvl_Filter;
 
 public class NoAVL {
     public int valor;

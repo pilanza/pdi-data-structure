@@ -5,11 +5,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.pdi.views.image_processing_views.AVLFilterView;
-import com.pdi.views.image_processing_views.FilterViewUtils;
-import com.pdi.views.image_processing_views.MedianFilterView;
-import com.pdi.views.image_processing_views.SaltAndPepperView;
-import com.pdi.views.image_processing_views.HistogramFilterView;
+import com.pdi.views.image_processing_views.Gray_Filtering.FilterViewUtils;
+import com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views.AVLFilterView;
+import com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views.HistogramFilterView;
+import com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views.MedianFilterView;
+import com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views.SaltAndPepperView;
 
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
@@ -39,10 +39,14 @@ public class MainView extends BorderPane {
             exit.setOnAction(e -> System.exit(0));
         archive.getItems().addAll(load_image, save, exit);
 
+        // ------------------------------------------------------------------------------
+        // |                                   Cinza                                    |
+        // ------------------------------------------------------------------------------
+
         Menu gray_filter = new Menu("Filtragem (Cinza)");
 
         // Quick Sort -------------------------------------------------------------------
-        Menu quicksort_gray_filtering = new Menu("Filtragem com Ordenação");
+        Menu quicksort_gray_filtering = new Menu("Filtragem com Ordenação (QS)");
 
         MenuItem qs_apply = new MenuItem("Aplicar na imagem");
         qs_apply.setOnAction(e -> MedianFilterView.applyOnImage(
@@ -81,7 +85,7 @@ public class MainView extends BorderPane {
 
         
         // Historiograma ----------------------------------------------------------------
-        Menu histo_gray_apply = new Menu("Filtragem com Histograma");
+        Menu histo_gray_filtering = new Menu("Filtragem com Histograma");
         MenuItem histo_apply = new MenuItem("Aplicar na imagem");
         histo_apply.setOnAction(e -> HistogramFilterView.applyOnImage(
             active_image,
@@ -91,13 +95,77 @@ public class MainView extends BorderPane {
         MenuItem histo_batch = new MenuItem("Aplicar em lote");
         histo_batch.setOnAction(e -> HistogramFilterView.applyOnBatch());
 
-        histo_gray_apply.getItems().addAll(histo_apply, histo_batch);
+        histo_gray_filtering.getItems().addAll(histo_apply, histo_batch);
         // ------------------------------------------------------------------------------
 
 
-        gray_filter.getItems().addAll(quicksort_gray_filtering, tree_gray_filtering, graph_gray_filtering, histo_gray_apply);
+        gray_filter.getItems().addAll(quicksort_gray_filtering, tree_gray_filtering, graph_gray_filtering, histo_gray_filtering);
+
+        // ------------------------------------------------------------------------------
+        // |                                  Colorido                                  |
+        // ------------------------------------------------------------------------------
+
+        Menu colored_filter = new Menu("Filtragem (colorida)");
+
+        // Quick Sort -------------------------------------------------------------------
+        Menu quicksort_colored_filtering = new Menu("Filtragem com Ordenação");
+
+        MenuItem qs_colored_apply = new MenuItem("Aplicar na imagem");
+        qs_colored_apply.setOnAction(e -> MedianFilterView.applyOnImage(
+            active_image,
+            result -> openImageAsActive(result, active_image_name + "_median" + active_image_extension)
+        ));
+        MenuItem qs_colored_batch = new MenuItem("Aplicar em lote");
+        qs_colored_batch.setOnAction(e -> MedianFilterView.applyOnBatch());
+        quicksort_colored_filtering.getItems().addAll(qs_colored_apply, qs_colored_batch);
+        // ------------------------------------------------------------------------------
+
+
+        // Arvore AVL -------------------------------------------------------------------
+        Menu tree_colored_filtering = new Menu("Filtragem com Árvore");
+
+        MenuItem avl_colored_apply = new MenuItem("Aplicar na imagem");
+        avl_colored_apply.setOnAction(e -> AVLFilterView.applyOnImage(
+            active_image,
+            result -> openImageAsActive(result, active_image_name + "_avl" + active_image_extension)
+        ));
+
+        MenuItem avl_colored_batch = new MenuItem("Aplicar em lote");
+        avl_colored_batch.setOnAction(e -> AVLFilterView.applyOnBatch());
+
+        tree_colored_filtering.getItems().addAll(avl_colored_apply, avl_colored_batch);
+        // ------------------------------------------------------------------------------
+
+
+        // Grafo ------------------------------------------------------------------------
+        Menu graph_colored_filtering = new Menu("Filtragem com Grafo");
+        graph_colored_filtering.getItems().addAll(
+            new MenuItem("Aplicar na imagem"),
+            new MenuItem("Aplicar em lote")
+        );
+        // ------------------------------------------------------------------------------
 
         
+        // Historiograma ----------------------------------------------------------------
+        Menu histo_colored_filtering = new Menu("Filtragem com Histograma");
+        MenuItem histo_colored_apply = new MenuItem("Aplicar na imagem");
+        histo_colored_apply.setOnAction(e -> HistogramFilterView.applyOnImage(
+            active_image,
+            result -> openImageAsActive(result, active_image_name + "_histogram" + active_image_extension)
+        ));
+
+        MenuItem histo_coloredd_batch = new MenuItem("Aplicar em lote");
+        histo_coloredd_batch.setOnAction(e -> HistogramFilterView.applyOnBatch());
+
+        histo_colored_filtering.getItems().addAll(histo_colored_apply, histo_coloredd_batch);
+        // ------------------------------------------------------------------------------
+
+        colored_filter.getItems().addAll(quicksort_colored_filtering, tree_colored_filtering, graph_colored_filtering, histo_colored_filtering);
+        
+        // ------------------------------------------------------------------------------
+
+
+
         // Menu Ruído
         Menu noise = new Menu("Inserir ruído");
         Menu salt_and_pepper = new Menu("Sal e Pimenta");
@@ -133,7 +201,7 @@ public class MainView extends BorderPane {
         });
         about.getItems().add(about_item);
 
-        top_menu.getMenus().addAll(archive, noise, gray_filter, about);
+        top_menu.getMenus().addAll(archive, noise, gray_filter, colored_filter, about);
         this.setTop(top_menu);
         this.setCenter(images_pane);
     }

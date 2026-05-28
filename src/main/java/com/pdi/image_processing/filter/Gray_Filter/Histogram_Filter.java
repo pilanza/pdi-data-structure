@@ -1,12 +1,12 @@
-package com.pdi.image_processing.filter;
+package com.pdi.image_processing.filter.Gray_Filter;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class HistogramFilter extends WritableImage {
+public class Histogram_Filter extends WritableImage {
 
-    public HistogramFilter(Image image, int windowSize) {
+    public Histogram_Filter(Image image, int windowSize) {
         super((int) image.getWidth(), (int) image.getHeight());
         int width  = (int) image.getWidth();
         int height = (int) image.getHeight();

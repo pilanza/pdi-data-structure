@@ -1,19 +1,22 @@
-package com.pdi.views.image_processing_views;
+package com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views;
 
 import java.io.File;
 import java.util.function.Consumer;
 
-import com.pdi.image_processing.filter.HistogramFilter;
+import com.pdi.image_processing.filter.Gray_Filter.QuickSort_Filter;
+import com.pdi.views.image_processing_views.Gray_Filtering.FilterViewUtils;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class HistogramFilterView {
+public class MedianFilterView {
 
     // ── Aplicar na imagem ativa ──────────────────────────────────────────────
     public static void applyOnImage(Image image, Consumer<Image> onResult) {
@@ -21,10 +24,11 @@ public class HistogramFilterView {
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Filtro da Mediana — Histograma");
+        if (!Stage.getWindows().isEmpty()) stage.initOwner(Stage.getWindows().get(0));
+        stage.setTitle("Filtro da Mediana — QuickSort");
         stage.setResizable(false);
 
-        VBox header = FilterViewUtils.buildHeader("Filtro da Mediana", "Histograma de Níveis de Cinza");
+        VBox header = FilterViewUtils.buildHeader("Filtro da Mediana", "Ordenação por QuickSort");
 
         Label windowLabel = FilterViewUtils.styledLabel("Tamanho da janela");
         Spinner<Integer> spinner = FilterViewUtils.buildSpinner();
@@ -39,7 +43,11 @@ public class HistogramFilterView {
             int size = FilterViewUtils.getSpinnerValue(spinner);
             if (size < 0) return;
             stage.close();
-            onResult.accept(new HistogramFilter(image, size));
+            try {
+                onResult.accept(new QuickSort_Filter(image, size));
+            } catch (Throwable ex) {
+                FilterViewUtils.showWarning("Erro ao aplicar filtro Mediana: " + ex.getClass().getSimpleName() + " — " + ex.getMessage());
+            }
         });
 
         HBox buttons = FilterViewUtils.buildButtonBar(cancelBtn, applyBtn);
@@ -52,21 +60,22 @@ public class HistogramFilterView {
         stage.show();
     }
 
-    // ── Aplicar em lote ──────────────────────────────────────────────────────
+    // ── Aplicar em lote (janela dedicada) ───────────────────────────────────
     public static void applyOnBatch() {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Filtro da Mediana Histograma — Lote");
+        if (!Stage.getWindows().isEmpty()) stage.initOwner(Stage.getWindows().get(0));
+        stage.setTitle("Filtro da Mediana — Lote");
         stage.setResizable(false);
 
-        VBox header = FilterViewUtils.buildHeader("Aplicar Filtro em Lote", "Histograma de Níveis de Cinza");
+        VBox header = FilterViewUtils.buildHeader("Aplicar Filtro em Lote", "Mediana por QuickSort");
 
         final File[] inputDir  = {null};
         final File[] outputDir = {null};
 
-        Label inputLabel  = FilterViewUtils.styledLabel("Pasta de entrada");
-        Label inputPath   = FilterViewUtils.pathLabel("Nenhuma pasta selecionada");
-        Button inputBtn   = FilterViewUtils.browseButton("Selecionar pasta…");
+        Label inputLabel = FilterViewUtils.styledLabel("Pasta de entrada");
+        Label inputPath  = FilterViewUtils.pathLabel("Nenhuma pasta selecionada");
+        Button inputBtn  = FilterViewUtils.browseButton("Selecionar pasta…");
         inputBtn.setOnAction(e -> {
             File dir = FilterViewUtils.chooseDir(stage, "Selecionar pasta de entrada");
             if (dir != null) { inputDir[0] = dir; inputPath.setText(dir.getAbsolutePath()); }
@@ -93,7 +102,8 @@ public class HistogramFilterView {
         progressBar.setStyle("-fx-accent: #4361ee;");
 
         Label progressLabel = new Label("");
-        progressLabel.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 11;");
+        progressLabel.setFont(Font.font("Segoe UI", 11));
+        progressLabel.setTextFill(Color.web("#6c757d"));
 
         Button cancelBtn = FilterViewUtils.buildCancelButton();
         Button applyBtn  = FilterViewUtils.buildApplyButton();
@@ -107,10 +117,9 @@ public class HistogramFilterView {
             if (size < 0) return;
 
             FilterViewUtils.runBatch(
-                inputDir[0], outputDir[0], "_histogram",
-                img -> new HistogramFilter(img, size),
-                progressBar, progressLabel,
-                applyBtn, cancelBtn, stage
+                inputDir[0], outputDir[0], "_median",
+                img -> new QuickSort_Filter(img, size),
+                progressBar, progressLabel, applyBtn, cancelBtn, stage
             );
         });
 

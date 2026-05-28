@@ -1,9 +1,10 @@
-package com.pdi.views.image_processing_views;
+package com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views;
 
 import java.io.File;
 import java.util.function.Consumer;
 
-import com.pdi.image_processing.filter.TreeAvlFilter.AVLFilter;
+import com.pdi.image_processing.filter.Gray_Filter.TreeAvl_Filter.*;
+import com.pdi.views.image_processing_views.Gray_Filtering.FilterViewUtils;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
