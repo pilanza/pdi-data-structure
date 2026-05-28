@@ -215,7 +215,7 @@ public class MainView extends BorderPane {
     private void loadImage() {
         FileChooser file_chooser = new FileChooser();
         file_chooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Imagem", "*.bmp, *.png")
+            new FileChooser.ExtensionFilter("Imagem", "*.bmp", "*.png")
         );
         if (lastDirectory != null) file_chooser.setInitialDirectory(lastDirectory);
 
