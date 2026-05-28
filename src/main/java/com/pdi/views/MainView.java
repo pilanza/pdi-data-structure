@@ -9,6 +9,7 @@ import com.pdi.views.image_processing_views.AVLFilterView;
 import com.pdi.views.image_processing_views.FilterViewUtils;
 import com.pdi.views.image_processing_views.MedianFilterView;
 import com.pdi.views.image_processing_views.SaltAndPepperView;
+import com.pdi.views.image_processing_views.HistogramFilterView;
 
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
@@ -69,14 +70,34 @@ public class MainView extends BorderPane {
         tree_gray_filtering.getItems().addAll(avl_apply, avl_batch);
         // ------------------------------------------------------------------------------
 
-        //Grafor
+
+        // Grafo ------------------------------------------------------------------------
         Menu graph_gray_filtering = new Menu("Filtragem com Grafo");
         graph_gray_filtering.getItems().addAll(
             new MenuItem("Aplicar na imagem"),
             new MenuItem("Aplicar em lote")
         );
-        gray_filter.getItems().addAll(quicksort_gray_filtering, tree_gray_filtering, graph_gray_filtering);
+        // ------------------------------------------------------------------------------
 
+        
+        // Historiograma ----------------------------------------------------------------
+        Menu histo_gray_apply = new Menu("Filtragem com Histograma");
+        MenuItem histo_apply = new MenuItem("Aplicar na imagem");
+        histo_apply.setOnAction(e -> HistogramFilterView.applyOnImage(
+            active_image,
+            result -> openImageAsActive(result, active_image_name + "_histogram" + active_image_extension)
+        ));
+
+        MenuItem histo_batch = new MenuItem("Aplicar em lote");
+        histo_batch.setOnAction(e -> HistogramFilterView.applyOnBatch());
+
+        histo_gray_apply.getItems().addAll(histo_apply, histo_batch);
+        // ------------------------------------------------------------------------------
+
+
+        gray_filter.getItems().addAll(quicksort_gray_filtering, tree_gray_filtering, graph_gray_filtering, histo_gray_apply);
+
+        
         // Menu Ruído
         Menu noise = new Menu("Inserir ruído");
         Menu salt_and_pepper = new Menu("Sal e Pimenta");
