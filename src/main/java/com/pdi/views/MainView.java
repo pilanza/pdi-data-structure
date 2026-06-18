@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import com.pdi.image_processing.filter.Color_Filter.ColorQSFilterView;
 import com.pdi.views.image_processing_views.FilterViewUtils;
 import com.pdi.views.image_processing_views.Gray_Filter_views.AVLFilterView;
+import com.pdi.views.image_processing_views.Gray_Filter_views.GraphFilterView;
 import com.pdi.views.image_processing_views.Gray_Filter_views.HistogramFilterView;
 import com.pdi.views.image_processing_views.Gray_Filter_views.MedianFilterView;
 import com.pdi.views.image_processing_views.NoiseView.ConfettiView;
@@ -81,10 +82,15 @@ public class MainView extends BorderPane {
 
         // Grafo ------------------------------------------------------------------------
         Menu graph_gray_filtering = new Menu("Filtragem com Grafo");
-        graph_gray_filtering.getItems().addAll(
-            new MenuItem("Aplicar na imagem"),
-            new MenuItem("Aplicar em lote")
-        );
+
+        MenuItem graph_apply = new MenuItem("Aplicar na imagem");
+        graph_apply.setOnAction(e -> GraphFilterView.applyOnImage(
+            active_image,
+            result -> openImageAsActive(result, active_image_name + "_graph" + active_image_extension)
+        ));
+        MenuItem graph_batch = new MenuItem("Aplicar em lote");
+        graph_batch.setOnAction(e -> GraphFilterView.applyOnBatch());
+        graph_gray_filtering.getItems().addAll(graph_apply, graph_batch);
         // ------------------------------------------------------------------------------
 
         
