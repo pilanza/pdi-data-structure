@@ -1,22 +1,20 @@
-package com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views;
+package com.pdi.views.image_processing_views.ColoredFilterView;
 
 import java.io.File;
 import java.util.function.Consumer;
 
-import com.pdi.image_processing.filter.Gray_Filter.TreeAvl_Filter.*;
-import com.pdi.views.image_processing_views.Gray_Filtering.FilterViewUtils;
+import com.pdi.image_processing.filter.Color_Filter.ColorHistogramFilter;
+import com.pdi.views.image_processing_views.FilterViewUtils;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class AVLFilterView {
+public class ColorHistogramFilterView {
 
     // ── Aplicar na imagem ativa ──────────────────────────────────────────────
     public static void applyOnImage(Image image, Consumer<Image> onResult) {
@@ -24,11 +22,10 @@ public class AVLFilterView {
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        if (!Stage.getWindows().isEmpty()) stage.initOwner(Stage.getWindows().get(0));
-        stage.setTitle("Filtro da Mediana — Árvore AVL");
+        stage.setTitle("Filtro da Mediana Colorido — Histograma");
         stage.setResizable(false);
 
-        VBox header = FilterViewUtils.buildHeader("Filtro da Mediana", "Árvore AVL");
+        VBox header = FilterViewUtils.buildHeader("Filtro da Mediana (Colorido)", "Histograma · RGB → YCbCr → Y → RGB");
 
         Label windowLabel = FilterViewUtils.styledLabel("Tamanho da janela");
         Spinner<Integer> spinner = FilterViewUtils.buildSpinner();
@@ -43,11 +40,7 @@ public class AVLFilterView {
             int size = FilterViewUtils.getSpinnerValue(spinner);
             if (size < 0) return;
             stage.close();
-            try {
-                onResult.accept(new AVLFilter(image, size));
-            } catch (Throwable ex) {
-                FilterViewUtils.showWarning("Erro ao aplicar filtro AVL: " + ex.getClass().getSimpleName() + " — " + ex.getMessage());
-            }
+            onResult.accept(new ColorHistogramFilter(image, size));
         });
 
         HBox buttons = FilterViewUtils.buildButtonBar(cancelBtn, applyBtn);
@@ -64,11 +57,10 @@ public class AVLFilterView {
     public static void applyOnBatch() {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        if (!Stage.getWindows().isEmpty()) stage.initOwner(Stage.getWindows().get(0));
-        stage.setTitle("Filtro da Mediana AVL — Lote");
+        stage.setTitle("Filtro da Mediana Colorido Histograma — Lote");
         stage.setResizable(false);
 
-        VBox header = FilterViewUtils.buildHeader("Aplicar Filtro em Lote", "Mediana por Árvore AVL");
+        VBox header = FilterViewUtils.buildHeader("Aplicar Filtro em Lote (Colorido)", "Histograma · RGB → YCbCr → Y → RGB");
 
         final File[] inputDir  = {null};
         final File[] outputDir = {null};
@@ -102,8 +94,7 @@ public class AVLFilterView {
         progressBar.setStyle("-fx-accent: #4361ee;");
 
         Label progressLabel = new Label("");
-        progressLabel.setFont(Font.font("Segoe UI", 11));
-        progressLabel.setTextFill(Color.web("#6c757d"));
+        progressLabel.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 11;");
 
         Button cancelBtn = FilterViewUtils.buildCancelButton();
         Button applyBtn  = FilterViewUtils.buildApplyButton();
@@ -117,14 +108,14 @@ public class AVLFilterView {
             if (size < 0) return;
 
             FilterViewUtils.runBatch(
-                inputDir[0], outputDir[0], "_avl",
-                img -> new AVLFilter(img, size),
-                progressBar, progressLabel, applyBtn, cancelBtn, stage
+                inputDir[0], outputDir[0], "_color_histogram",
+                img -> new ColorHistogramFilter(img, size),
+                progressBar, progressLabel,
+                applyBtn, cancelBtn, stage
             );
         });
 
         HBox buttons = FilterViewUtils.buildButtonBar(cancelBtn, applyBtn);
-
         VBox body = new VBox(18, inputRow, outputRow, windowRow, progressBar, progressLabel);
         body.setPadding(new Insets(20, 24, 8, 24));
 

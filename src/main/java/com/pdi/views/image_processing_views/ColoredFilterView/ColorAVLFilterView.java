@@ -1,22 +1,20 @@
-package com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views;
+package com.pdi.views.image_processing_views.ColoredFilterView;
 
 import java.io.File;
 import java.util.function.Consumer;
 
-import com.pdi.image_processing.filter.Gray_Filter.QuickSort_Filter;
-import com.pdi.views.image_processing_views.Gray_Filtering.FilterViewUtils;
+import com.pdi.image_processing.filter.Color_Filter.ColorAVLFilter;
+import com.pdi.views.image_processing_views.FilterViewUtils;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class MedianFilterView {
+public class ColorAVLFilterView {
 
     // ── Aplicar na imagem ativa ──────────────────────────────────────────────
     public static void applyOnImage(Image image, Consumer<Image> onResult) {
@@ -24,11 +22,10 @@ public class MedianFilterView {
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        if (!Stage.getWindows().isEmpty()) stage.initOwner(Stage.getWindows().get(0));
-        stage.setTitle("Filtro da Mediana — QuickSort");
+        stage.setTitle("Filtro da Mediana Colorido — Árvore AVL");
         stage.setResizable(false);
 
-        VBox header = FilterViewUtils.buildHeader("Filtro da Mediana", "Ordenação por QuickSort");
+        VBox header = FilterViewUtils.buildHeader("Filtro da Mediana (Colorido)", "Árvore AVL · RGB → YCbCr → Y → RGB");
 
         Label windowLabel = FilterViewUtils.styledLabel("Tamanho da janela");
         Spinner<Integer> spinner = FilterViewUtils.buildSpinner();
@@ -43,11 +40,7 @@ public class MedianFilterView {
             int size = FilterViewUtils.getSpinnerValue(spinner);
             if (size < 0) return;
             stage.close();
-            try {
-                onResult.accept(new QuickSort_Filter(image, size));
-            } catch (Throwable ex) {
-                FilterViewUtils.showWarning("Erro ao aplicar filtro Mediana: " + ex.getClass().getSimpleName() + " — " + ex.getMessage());
-            }
+            onResult.accept(new ColorAVLFilter(image, size));
         });
 
         HBox buttons = FilterViewUtils.buildButtonBar(cancelBtn, applyBtn);
@@ -60,15 +53,14 @@ public class MedianFilterView {
         stage.show();
     }
 
-    // ── Aplicar em lote (janela dedicada) ───────────────────────────────────
+    // ── Aplicar em lote ──────────────────────────────────────────────────────
     public static void applyOnBatch() {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        if (!Stage.getWindows().isEmpty()) stage.initOwner(Stage.getWindows().get(0));
-        stage.setTitle("Filtro da Mediana — Lote");
+        stage.setTitle("Filtro da Mediana Colorido AVL — Lote");
         stage.setResizable(false);
 
-        VBox header = FilterViewUtils.buildHeader("Aplicar Filtro em Lote", "Mediana por QuickSort");
+        VBox header = FilterViewUtils.buildHeader("Aplicar Filtro em Lote (Colorido)", "Árvore AVL · RGB → YCbCr → Y → RGB");
 
         final File[] inputDir  = {null};
         final File[] outputDir = {null};
@@ -102,8 +94,7 @@ public class MedianFilterView {
         progressBar.setStyle("-fx-accent: #4361ee;");
 
         Label progressLabel = new Label("");
-        progressLabel.setFont(Font.font("Segoe UI", 11));
-        progressLabel.setTextFill(Color.web("#6c757d"));
+        progressLabel.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 11;");
 
         Button cancelBtn = FilterViewUtils.buildCancelButton();
         Button applyBtn  = FilterViewUtils.buildApplyButton();
@@ -117,14 +108,14 @@ public class MedianFilterView {
             if (size < 0) return;
 
             FilterViewUtils.runBatch(
-                inputDir[0], outputDir[0], "_median",
-                img -> new QuickSort_Filter(img, size),
-                progressBar, progressLabel, applyBtn, cancelBtn, stage
+                inputDir[0], outputDir[0], "_color_avl",
+                img -> new ColorAVLFilter(img, size),
+                progressBar, progressLabel,
+                applyBtn, cancelBtn, stage
             );
         });
 
         HBox buttons = FilterViewUtils.buildButtonBar(cancelBtn, applyBtn);
-
         VBox body = new VBox(18, inputRow, outputRow, windowRow, progressBar, progressLabel);
         body.setPadding(new Insets(20, 24, 8, 24));
 

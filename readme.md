@@ -199,3 +199,5 @@ git log --oneline
 ---
 
 > 💡 **Dúvidas?** Fale com o restante do grupo antes de fazer alterações grandes no código, especialmente nos arquivos que outras pessoas também estão editando.
+
+---

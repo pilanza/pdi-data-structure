@@ -5,18 +5,22 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.pdi.views.image_processing_views.Gray_Filtering.FilterViewUtils;
-import com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views.AVLFilterView;
-import com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views.HistogramFilterView;
-import com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views.MedianFilterView;
-import com.pdi.views.image_processing_views.Gray_Filtering.Gray_Filter_views.SaltAndPepperView;
+import com.pdi.image_processing.filter.Color_Filter.ColorQSFilterView;
+import com.pdi.views.image_processing_views.FilterViewUtils;
+import com.pdi.views.image_processing_views.Gray_Filter_views.AVLFilterView;
+import com.pdi.views.image_processing_views.Gray_Filter_views.HistogramFilterView;
+import com.pdi.views.image_processing_views.Gray_Filter_views.MedianFilterView;
+import com.pdi.views.image_processing_views.NoiseView.ConfettiView;
+import com.pdi.views.image_processing_views.NoiseView.SaltAndPepperView;
+import com.pdi.views.image_processing_views.ColoredFilterView.ColorAVLFilterView;
+import com.pdi.views.image_processing_views.ColoredFilterView.ColorHistogramFilterView;
 
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.FileChooser;
+import javafx.stage.FileChooser;    
 
 public class MainView extends BorderPane {
     private Pane images_pane = new Pane();
@@ -108,32 +112,35 @@ public class MainView extends BorderPane {
         Menu colored_filter = new Menu("Filtragem (colorida)");
 
         // Quick Sort -------------------------------------------------------------------
-        Menu quicksort_colored_filtering = new Menu("Filtragem com Ordenação");
+        Menu colored_qs = new Menu("Filtragem com Ordenação");
 
-        MenuItem qs_colored_apply = new MenuItem("Aplicar na imagem");
-        qs_colored_apply.setOnAction(e -> MedianFilterView.applyOnImage(
+        MenuItem colored_qs_apply = new MenuItem("Aplicar na imagem");
+        colored_qs_apply.setOnAction(e -> ColorQSFilterView.applyOnImage(
             active_image,
-            result -> openImageAsActive(result, active_image_name + "_median" + active_image_extension)
+            result -> openImageAsActive(result, active_image_name + "_color_qs" + active_image_extension)
         ));
-        MenuItem qs_colored_batch = new MenuItem("Aplicar em lote");
-        qs_colored_batch.setOnAction(e -> MedianFilterView.applyOnBatch());
-        quicksort_colored_filtering.getItems().addAll(qs_colored_apply, qs_colored_batch);
+
+        MenuItem colored_qs_batch = new MenuItem("Aplicar em lote");
+        colored_qs_batch.setOnAction(e -> ColorQSFilterView.applyOnBatch());
+
+        colored_qs.getItems().addAll(colored_qs_apply, colored_qs_batch);
+        colored_filter.getItems().addAll(colored_qs);
         // ------------------------------------------------------------------------------
 
 
         // Arvore AVL -------------------------------------------------------------------
-        Menu tree_colored_filtering = new Menu("Filtragem com Árvore");
+        Menu color_avl = new Menu("Filtragem com Árvore AVL");
 
-        MenuItem avl_colored_apply = new MenuItem("Aplicar na imagem");
-        avl_colored_apply.setOnAction(e -> AVLFilterView.applyOnImage(
+        MenuItem color_avl_apply = new MenuItem("Aplicar na imagem");
+        color_avl_apply.setOnAction(e -> ColorAVLFilterView.applyOnImage(
             active_image,
-            result -> openImageAsActive(result, active_image_name + "_avl" + active_image_extension)
+            result -> openImageAsActive(result, active_image_name + "_color_avl" + active_image_extension)
         ));
 
-        MenuItem avl_colored_batch = new MenuItem("Aplicar em lote");
-        avl_colored_batch.setOnAction(e -> AVLFilterView.applyOnBatch());
+        MenuItem color_avl_batch = new MenuItem("Aplicar em lote");
+        color_avl_batch.setOnAction(e -> ColorAVLFilterView.applyOnBatch());
 
-        tree_colored_filtering.getItems().addAll(avl_colored_apply, avl_colored_batch);
+        color_avl.getItems().addAll(color_avl_apply, color_avl_batch);
         // ------------------------------------------------------------------------------
 
 
@@ -147,20 +154,21 @@ public class MainView extends BorderPane {
 
         
         // Historiograma ----------------------------------------------------------------
-        Menu histo_colored_filtering = new Menu("Filtragem com Histograma");
-        MenuItem histo_colored_apply = new MenuItem("Aplicar na imagem");
-        histo_colored_apply.setOnAction(e -> HistogramFilterView.applyOnImage(
+        Menu color_histogram = new Menu("Filtragem com Histograma");
+
+        MenuItem color_histogram_apply = new MenuItem("Aplicar na imagem");
+        color_histogram_apply.setOnAction(e -> ColorHistogramFilterView.applyOnImage(
             active_image,
-            result -> openImageAsActive(result, active_image_name + "_histogram" + active_image_extension)
+            result -> openImageAsActive(result, active_image_name + "_color_histogram" + active_image_extension)
         ));
 
-        MenuItem histo_coloredd_batch = new MenuItem("Aplicar em lote");
-        histo_coloredd_batch.setOnAction(e -> HistogramFilterView.applyOnBatch());
+        MenuItem color_histogram_batch = new MenuItem("Aplicar em lote");
+        color_histogram_batch.setOnAction(e -> ColorHistogramFilterView.applyOnBatch());
 
-        histo_colored_filtering.getItems().addAll(histo_colored_apply, histo_coloredd_batch);
+        color_histogram.getItems().addAll(color_histogram_apply, color_histogram_batch);
         // ------------------------------------------------------------------------------
 
-        colored_filter.getItems().addAll(quicksort_colored_filtering, tree_colored_filtering, graph_colored_filtering, histo_colored_filtering);
+        colored_filter.getItems().addAll(colored_qs, color_avl, graph_colored_filtering, color_histogram);
         
         // ------------------------------------------------------------------------------
 
@@ -168,6 +176,8 @@ public class MainView extends BorderPane {
 
         // Menu Ruído
         Menu noise = new Menu("Inserir ruído");
+
+        // ------------------------------------------------------------------------------
         Menu salt_and_pepper = new Menu("Sal e Pimenta");
 
         MenuItem sp_apply = new MenuItem("Aplicar na imagem");
@@ -182,7 +192,27 @@ public class MainView extends BorderPane {
         sp_batch.setOnAction(e -> SaltAndPepperView.applyOnBatch());
 
         salt_and_pepper.getItems().addAll(sp_apply, sp_batch);
-        noise.getItems().addAll(salt_and_pepper);
+        // ------------------------------------------------------------------------------
+
+        
+        // ------------------------------------------------------------------------------
+        Menu confetti = new Menu("Confete");
+
+        MenuItem confetti_apply = new MenuItem("Aplicar na imagem");
+        confetti_apply.setOnAction(e -> ConfettiView.applyOnImage(
+            active_image, active_image_name, active_image_extension,
+            result -> openImageAsActive(result, active_image_name + "_confetti" + active_image_extension)
+        ));
+
+        MenuItem confetti_batch = new MenuItem("Aplicar em lote");
+        confetti_batch.setOnAction(e -> ConfettiView.applyOnBatch());
+
+        confetti.getItems().addAll(confetti_apply, confetti_batch);
+
+        
+        // ------------------------------------------------------------------------------
+
+        noise.getItems().addAll(salt_and_pepper,confetti);
 
         // Menu Sobre
         Menu about = new Menu("Sobre");
@@ -215,7 +245,7 @@ public class MainView extends BorderPane {
     private void loadImage() {
         FileChooser file_chooser = new FileChooser();
         file_chooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Imagem", "*.bmp", "*.png")
+            new FileChooser.ExtensionFilter("Imagem", "*.bmp", "*.png", "*.jpeg", "*.jpg")
         );
         if (lastDirectory != null) file_chooser.setInitialDirectory(lastDirectory);
 

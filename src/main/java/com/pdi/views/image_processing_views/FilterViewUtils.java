@@ -1,4 +1,4 @@
-package com.pdi.views.image_processing_views.Gray_Filtering;
+package com.pdi.views.image_processing_views;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -34,7 +34,7 @@ public class FilterViewUtils {
     public static BufferedImage toBufferedImage(Image image) {
         int w = (int) image.getWidth();
         int h = (int) image.getHeight();
-        BufferedImage buf = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        BufferedImage buf = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);  
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
                 javafx.scene.paint.Color fx = image.getPixelReader().getColor(x, y);
@@ -56,10 +56,10 @@ public class FilterViewUtils {
             Button applyBtn, Button cancelBtn, Stage stage) {
 
         File[] bmps = inputDir.listFiles(
-            (dir, name) -> name.toLowerCase().endsWith(".bmp")
+            (dir, name) -> name.toLowerCase().endsWith(".bmp") || name.toLowerCase().endsWith(".png")
         );
         if (bmps == null || bmps.length == 0) {
-            showWarning("Nenhum arquivo .bmp encontrado na pasta de entrada.");
+            showWarning("Nenhum arquivo .bmp a encontrado na pasta de entrada.");
             return;
         }
 
