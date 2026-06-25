@@ -14,6 +14,7 @@ import com.pdi.views.image_processing_views.Gray_Filter_views.MedianFilterView;
 import com.pdi.views.image_processing_views.NoiseView.ConfettiView;
 import com.pdi.views.image_processing_views.NoiseView.SaltAndPepperView;
 import com.pdi.views.image_processing_views.ColoredFilterView.ColorAVLFilterView;
+import com.pdi.views.image_processing_views.ColoredFilterView.ColorGraphFilterView;
 import com.pdi.views.image_processing_views.ColoredFilterView.ColorHistogramFilterView;
 
 import javafx.scene.control.Alert.AlertType;
@@ -152,10 +153,17 @@ public class MainView extends BorderPane {
 
         // Grafo ------------------------------------------------------------------------
         Menu graph_colored_filtering = new Menu("Filtragem com Grafo");
-        graph_colored_filtering.getItems().addAll(
-            new MenuItem("Aplicar na imagem"),
-            new MenuItem("Aplicar em lote")
-        );
+
+        MenuItem graph_colored_apply = new MenuItem("Aplicar na imagem");
+        graph_colored_apply.setOnAction(e -> ColorGraphFilterView.applyOnImage(
+            active_image,
+            result -> openImageAsActive(result, active_image_name + "_color_graph" + active_image_extension)
+        ));
+
+        MenuItem graph_colored_batch = new MenuItem("Aplicar em lote");
+        graph_colored_batch.setOnAction(e -> ColorGraphFilterView.applyOnBatch());
+
+        graph_colored_filtering.getItems().addAll(graph_colored_apply, graph_colored_batch);
         // ------------------------------------------------------------------------------
 
         
