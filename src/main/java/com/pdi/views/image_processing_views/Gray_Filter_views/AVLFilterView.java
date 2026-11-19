@@ -44,7 +44,7 @@ public class AVLFilterView {
             if (size < 0) return;
             stage.close();
             try {
-                onResult.accept(new AVLFilter(image, size));
+                FilterViewUtils.applyTimedFilter(() -> new AVLFilter(image, size), onResult);
             } catch (Throwable ex) {
                 FilterViewUtils.showWarning("Erro ao aplicar filtro AVL: " + ex.getClass().getSimpleName() + " — " + ex.getMessage());
             }

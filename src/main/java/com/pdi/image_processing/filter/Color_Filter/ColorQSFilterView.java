@@ -39,7 +39,7 @@ public class ColorQSFilterView {
             int size = FilterViewUtils.getSpinnerValue(spinner);
             if (size < 0) return;
             stage.close();
-            onResult.accept(new ColorMedianFilter_QS(image, size));
+            FilterViewUtils.applyTimedFilter(() -> new ColorMedianFilter_QS(image, size), onResult);
         });
 
         HBox buttons = FilterViewUtils.buildButtonBar(cancelBtn, applyBtn);

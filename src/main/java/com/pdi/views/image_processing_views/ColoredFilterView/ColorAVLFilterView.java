@@ -40,7 +40,7 @@ public class ColorAVLFilterView {
             int size = FilterViewUtils.getSpinnerValue(spinner);
             if (size < 0) return;
             stage.close();
-            onResult.accept(new ColorAVLFilter(image, size));
+            FilterViewUtils.applyTimedFilter(() -> new ColorAVLFilter(image, size), onResult);
         });
 
         HBox buttons = FilterViewUtils.buildButtonBar(cancelBtn, applyBtn);

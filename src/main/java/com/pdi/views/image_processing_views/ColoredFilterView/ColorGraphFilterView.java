@@ -47,7 +47,7 @@ public class ColorGraphFilterView {
             int depth = spinner.getValue();
             stage.close();
             try {
-                onResult.accept(new ColorGraphFilter(image, depth));
+                FilterViewUtils.applyTimedFilter(() -> new ColorGraphFilter(image, depth), onResult);
             } catch (Throwable ex) {
                 FilterViewUtils.showWarning("Erro ao aplicar filtro Grafo Colorido: " + ex.getClass().getSimpleName() + " — " + ex.getMessage());
             }

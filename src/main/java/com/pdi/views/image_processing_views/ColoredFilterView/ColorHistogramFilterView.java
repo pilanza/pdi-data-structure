@@ -40,7 +40,7 @@ public class ColorHistogramFilterView {
             int size = FilterViewUtils.getSpinnerValue(spinner);
             if (size < 0) return;
             stage.close();
-            onResult.accept(new ColorHistogramFilter(image, size));
+            FilterViewUtils.applyTimedFilter(() -> new ColorHistogramFilter(image, size), onResult);
         });
 
         HBox buttons = FilterViewUtils.buildButtonBar(cancelBtn, applyBtn);

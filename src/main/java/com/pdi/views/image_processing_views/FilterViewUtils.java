@@ -3,7 +3,10 @@ package com.pdi.views.image_processing_views;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.imageio.ImageIO;
 
@@ -16,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
@@ -28,6 +32,22 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 public class FilterViewUtils {
+    public static void applyTimedFilter(Supplier<Image> filter, Consumer<Image> onResult) {
+        long start = System.nanoTime();
+        Image result = filter.get();
+        long elapsed = System.nanoTime() - start;
+        onResult.accept(result);
+
+        Alert done = new Alert(AlertType.INFORMATION);
+        done.setTitle("Filtro aplicado");
+        done.setHeaderText(null);
+        done.setContentText("Tempo de filtragem: " + formatDuration(elapsed));
+        done.showAndWait();
+    }
+
+    private static String formatDuration(long nanos) {
+        return String.format(Locale.forLanguageTag("pt-BR"), "%.3f ms", nanos / 1_000_000.0);
+    }
 
     // ── Imagem ───────────────────────────────────────────────────────────────
 
@@ -67,15 +87,40 @@ public class FilterViewUtils {
         applyBtn.setDisable(true);
         cancelBtn.setDisable(true);
 
+        StringBuilder timings = new StringBuilder();
         int[] success = {0}, fail = {0};
+        long batchStart = System.nanoTime();
         for (int i = 0; i < bmps.length; i++) {
             File file = bmps[i];
             try {
+                // Início do tempo total
+                long totalStart = System.nanoTime();
+
+                // Leitura da imagem
                 Image original = new Image(file.toURI().toString());
+
+                long processingStart = System.nanoTime();
                 WritableImage result = processor.apply(original);
+                long processingTime = System.nanoTime() - processingStart;
+                timings.append(file.getName()).append(": ")
+                        .append(formatDuration(processingTime)).append(System.lineSeparator());
+
+                // Gravação do resultado
                 String baseName = file.getName().replaceFirst("\\.[^.]+$", "");
                 File outFile = new File(outputDir, baseName + suffix + ".bmp");
+
                 ImageIO.write(toBufferedImage(result), "bmp", outFile);
+
+                // Fim do tempo total
+                long totalTime = System.nanoTime() - totalStart;
+
+                // Exibição dos resultados no console
+                System.out.println("Imagem: " + file.getName());
+                System.out.printf("Tempo de processamento: %.3f ms%n",
+                        processingTime / 1_000_000.0);
+                System.out.printf("Tempo total: %.3f ms%n",
+                        totalTime / 1_000_000.0);
+
                 success[0]++;
             } catch (IOException ex) {
                 fail[0]++;
@@ -84,6 +129,7 @@ public class FilterViewUtils {
             progressLabel.setText("Processando " + (i + 1) + " de " + bmps.length + "…");
         }
 
+        long batchTime = System.nanoTime() - batchStart;
         progressLabel.setText("Concluído!");
         applyBtn.setDisable(false);
         cancelBtn.setDisable(false);
@@ -96,6 +142,16 @@ public class FilterViewUtils {
             "✔  Salvas com sucesso: " + success[0] + "\n" +
             (fail[0] > 0 ? "✘  Falhas: " + fail[0] : "")
         );
+        Label summary = new Label(done.getContentText() + "\nTempo total do lote: " + formatDuration(batchTime));
+        done.setContentText(null);
+        VBox details = new VBox(8, summary);
+        if (timings.length() > 0) {
+            TextArea timingList = new TextArea(timings.toString());
+            timingList.setEditable(false);
+            timingList.setPrefRowCount(8);
+            details.getChildren().addAll(new Label("Tempo por imagem"), timingList);
+        }
+        done.getDialogPane().setContent(details);
         done.showAndWait();
         stage.close();
     }

@@ -44,7 +44,7 @@ public class MedianFilterView {
             if (size < 0) return;
             stage.close();
             try {
-                onResult.accept(new QuickSort_Filter(image, size));
+                FilterViewUtils.applyTimedFilter(() -> new QuickSort_Filter(image, size), onResult);
             } catch (Throwable ex) {
                 FilterViewUtils.showWarning("Erro ao aplicar filtro Mediana: " + ex.getClass().getSimpleName() + " — " + ex.getMessage());
             }

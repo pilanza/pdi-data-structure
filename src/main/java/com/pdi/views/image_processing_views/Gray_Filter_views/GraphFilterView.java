@@ -47,7 +47,7 @@ public class GraphFilterView {
             int depth = spinner.getValue();
             stage.close();
             try {
-                onResult.accept(new GraphFilter(image, depth));
+                FilterViewUtils.applyTimedFilter(() -> new GraphFilter(image, depth), onResult);
             } catch (Throwable ex) {
                 FilterViewUtils.showWarning("Erro ao aplicar filtro Grafo: " + ex.getClass().getSimpleName() + " — " + ex.getMessage());
             }
